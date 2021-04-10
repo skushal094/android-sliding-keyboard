@@ -45,33 +45,33 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
 
-        retrieveKeys();
+//        retrieveKeys();
 
-        kv.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                // For each key in the key list
-                for (Keyboard.Key k : keyList) {
-                    // If the coordinates from the Motion event are inside of the key
-                    if (k.isInside((int) event.getX(), (int) event.getY())) {
-                        // k is the key pressed
-                        Log.d("Debugging",
-                                "Key pressed: X=" + k.x + " - Y=" + k.y);
-                        int centreX, centreY;
-                        centreX = (k.width / 2) + k.x;
-                        centreY = (k.height / 2) + k.y;
-                        // These values are relative to the Keyboard View
-                        Log.d("Debugging",
-                                "Centre of the key pressed: X=" + centreX + " - Y=" + centreY);
-                    }
-                }
-            }
-            // Return false to avoid consuming the touch event
-            return false;
-        });
+//        kv.setOnTouchListener((v, event) -> {
+//            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                // For each key in the key list
+//                for (Keyboard.Key k : keyList) {
+//                    // If the coordinates from the Motion event are inside of the key
+//                    if (k.isInside((int) event.getX(), (int) event.getY())) {
+//                        // k is the key pressed
+//                        Log.d("Debugging",
+//                                "Key pressed: X=" + k.x + " - Y=" + k.y);
+//                        int centreX, centreY;
+//                        centreX = (k.width / 2) + k.x;
+//                        centreY = (k.height / 2) + k.y;
+//                        // These values are relative to the Keyboard View
+//                        Log.d("Debugging",
+//                                "Centre of the key pressed: X=" + centreX + " - Y=" + centreY);
+//                    }
+//                }
+//            }
+//            // Return false to avoid consuming the touch event
+//            return false;
+//        });
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         return kv;
     }
@@ -79,7 +79,7 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
-        retrieveKeys();
+//        retrieveKeys();
     }
 
     public void retrieveKeys() {
@@ -99,7 +99,7 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         InputConnection ic = getCurrentInputConnection();
-        playClick(primaryCode);
+//        playClick(primaryCode);
         switch (primaryCode) {
             case -8:
                 break;
@@ -168,6 +168,11 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        long curTime = System.currentTimeMillis();
+        if ((curTime - lastUpdate) < 500) {
+            return;
+        }
+
         Sensor mySensor = sensorEvent.sensor;
 
         if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -175,11 +180,9 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
-            long curTime = System.currentTimeMillis();
-
-            if ((curTime - lastUpdate) > 100) {
-                long diffTime = (curTime - lastUpdate);
-                lastUpdate = curTime;
+//            if (((curTime - lastUpdate) > 100)) {
+//                long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
 
 //                float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
 
@@ -187,22 +190,20 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
 //
 //                }
 
-                last_x = x;
-                last_y = y;
-                last_z = z;
+            last_x = x;
+            last_y = y;
+            last_z = z;
 //                Log.d("Accelerometer", "" + last_x + " - " + last_y + " - " + last_z);
 
-                if (last_x > 3.5) {
-                    kv.setKeyboard(new Keyboard(this, R.xml.qwerty_left));
-                }
-                else if (last_x < -3.5) {
-                    kv.setKeyboard(new Keyboard(this, R.xml.qwerty_right));
-                }
-                else {
-                    kv.setKeyboard(new Keyboard(this, R.xml.qwerty));
-                }
+            if (last_x > 3.5) {
+                kv.setKeyboard(new Keyboard(KeyboardService.this, R.xml.qwerty_left));
+            } else if (last_x < -3.5) {
+                kv.setKeyboard(new Keyboard(KeyboardService.this, R.xml.qwerty_right));
+            } else {
+                kv.setKeyboard(new Keyboard(KeyboardService.this, R.xml.qwerty));
             }
         }
+//        }
     }
 
     @Override
