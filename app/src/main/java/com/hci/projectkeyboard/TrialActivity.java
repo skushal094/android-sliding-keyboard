@@ -26,7 +26,7 @@ public class TrialActivity extends AppCompatActivity {
     private Intent trialIntent;
     private boolean isActualTrial = false;
 
-    private int TRIALS = 30;
+    private int TRIALS = 15;
 
     private List<String> phrases;
 
