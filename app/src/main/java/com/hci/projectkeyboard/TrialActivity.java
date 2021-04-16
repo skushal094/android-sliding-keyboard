@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -35,6 +38,10 @@ public class TrialActivity extends AppCompatActivity {
 
     private TextView parentSentence;
     private Button nextButton;
+    private EditText phraseEditText;
+
+    private long startTypingTimer, endTypingTimer;
+    private long timeTaken = 0;
 
     @Override
     public void onBackPressed() {
@@ -65,6 +72,9 @@ public class TrialActivity extends AppCompatActivity {
         preparePhrases();
         initiatePhrase();
 
+        phraseEditText = findViewById(R.id.editTextTextPersonName);
+        attachListenerToEditText();
+
         if (isActualTrial) {
             // TODO set up database helper here
 //            db_helper = new DatabaseHelper(this);
@@ -93,10 +103,33 @@ public class TrialActivity extends AppCompatActivity {
 
     private void attachListenerToNextButton() {
         nextButton.setOnClickListener(v -> {
-            // TODO Calculate time taken here
+            timeTaken = endTypingTimer - startTypingTimer;
             // TODO calculate error rate here
             // TODO write into database here
             switchActivity();
+        });
+    }
+
+    private void attachListenerToEditText() {
+        phraseEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // first letter
+                if (s.length() == 1) {
+                    startTypingTimer = System.currentTimeMillis();
+                }
+                endTypingTimer = System.currentTimeMillis();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
     }
 
