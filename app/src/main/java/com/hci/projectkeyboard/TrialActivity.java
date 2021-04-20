@@ -43,6 +43,8 @@ public class TrialActivity extends AppCompatActivity {
     private long startTypingTimer, endTypingTimer;
     private long timeTaken = 0;
 
+    private String originalPhrase, transcribedPhrase;
+
     @Override
     public void onBackPressed() {
 
@@ -104,7 +106,42 @@ public class TrialActivity extends AppCompatActivity {
     private void attachListenerToNextButton() {
         nextButton.setOnClickListener(v -> {
             timeTaken = endTypingTimer - startTypingTimer;
-            // TODO calculate error rate here
+
+            // calculate error rate here
+            originalPhrase = (String) parentSentence.getText();
+            transcribedPhrase = phraseEditText.getText().toString();
+
+//            // replace multiple spaces with one
+//            originalPhrase = originalPhrase.replaceAll("\\s+", " ");
+//            transcribedPhrase = transcribedPhrase.replaceAll("\\s+", " ");
+//
+//            // trim the string
+//            originalPhrase = originalPhrase.trim();
+//            transcribedPhrase = transcribedPhrase.trim();
+
+            int[][] D = new int[originalPhrase.length()][transcribedPhrase.length()];
+
+            for (int i = 0; i < originalPhrase.length(); i++) {
+                D[i][0] = i;
+            }
+
+            for (int i = 0; i < transcribedPhrase.length(); i++) {
+                D[0][i] = i;
+            }
+
+            for (int i = 1; i < originalPhrase.length(); i++) {
+                for (int j = 1; j < transcribedPhrase.length(); j++) {
+                    if (originalPhrase.charAt(i) == transcribedPhrase.charAt(j)) {
+                        D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1]));
+                    } else {
+                        D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1] + 1));
+                    }
+                }
+            }
+
+            int MSD = D[originalPhrase.length() - 1][transcribedPhrase.length() - 1];
+            double errorRate = MSD * 100.0 / Math.max(originalPhrase.length(), transcribedPhrase.length());
+
             // TODO write into database here
             switchActivity();
         });
