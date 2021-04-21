@@ -85,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
-    public List<SessionDataEntry> getAllTrialDataEntry() {
+    public List<SessionDataEntry> getAllSessionDataEntry() {
         List<SessionDataEntry> sessionList = new ArrayList<SessionDataEntry>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_SESSIONS;

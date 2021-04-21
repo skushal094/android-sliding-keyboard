@@ -213,7 +213,10 @@ public class TrialActivity extends AppCompatActivity {
 
     private void switchActivity() {
         if (previousIndex >= TRIALS - 1) {
-            // TODO switch to final activity
+            Intent intent = new Intent(TrialActivity.this, AfterSubmitActivity.class);
+            intent.putExtra("keyboard_type", keyboardType);
+            intent.putExtra("is_actual_trial", isActualTrial);
+            startActivity(intent);
         } else {
             Intent nextIntent = new Intent(TrialActivity.this, TrialActivity.class);
             nextIntent.putExtra("keyboard_type", keyboardType);
