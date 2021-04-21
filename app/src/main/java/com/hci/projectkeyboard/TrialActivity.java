@@ -19,6 +19,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +46,8 @@ public class TrialActivity extends AppCompatActivity {
     private long timeTaken = 0;
 
     private String originalPhrase, transcribedPhrase;
+
+    private DatabaseHelper db_helper;
 
     @Override
     public void onBackPressed() {
@@ -78,8 +82,7 @@ public class TrialActivity extends AppCompatActivity {
         attachListenerToEditText();
 
         if (isActualTrial) {
-            // TODO set up database helper here
-//            db_helper = new DatabaseHelper(this);
+            db_helper = new DatabaseHelper(this);
         } else {
 
         }
@@ -105,11 +108,12 @@ public class TrialActivity extends AppCompatActivity {
 
     private void attachListenerToNextButton() {
         nextButton.setOnClickListener(v -> {
-            timeTaken = endTypingTimer - startTypingTimer;
+            if (isActualTrial) {
+                timeTaken = endTypingTimer - startTypingTimer;
 
-            // calculate error rate here
-            originalPhrase = (String) parentSentence.getText();
-            transcribedPhrase = phraseEditText.getText().toString();
+                // calculate error rate here
+                originalPhrase = (String) parentSentence.getText();
+                transcribedPhrase = phraseEditText.getText().toString();
 
 //            // replace multiple spaces with one
 //            originalPhrase = originalPhrase.replaceAll("\\s+", " ");
@@ -119,32 +123,45 @@ public class TrialActivity extends AppCompatActivity {
 //            originalPhrase = originalPhrase.trim();
 //            transcribedPhrase = transcribedPhrase.trim();
 
-            int[][] D = new int[originalPhrase.length()][transcribedPhrase.length()];
+                int[][] D = new int[originalPhrase.length()][transcribedPhrase.length()];
 
-            for (int i = 0; i < originalPhrase.length(); i++) {
-                D[i][0] = i;
-            }
+                for (int i = 0; i < originalPhrase.length(); i++) {
+                    D[i][0] = i;
+                }
 
-            for (int i = 0; i < transcribedPhrase.length(); i++) {
-                D[0][i] = i;
-            }
+                for (int i = 0; i < transcribedPhrase.length(); i++) {
+                    D[0][i] = i;
+                }
 
-            for (int i = 1; i < originalPhrase.length(); i++) {
-                for (int j = 1; j < transcribedPhrase.length(); j++) {
-                    if (originalPhrase.charAt(i) == transcribedPhrase.charAt(j)) {
-                        D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1]));
-                    } else {
-                        D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1] + 1));
+                for (int i = 1; i < originalPhrase.length(); i++) {
+                    for (int j = 1; j < transcribedPhrase.length(); j++) {
+                        if (originalPhrase.charAt(i) == transcribedPhrase.charAt(j)) {
+                            D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1]));
+                        } else {
+                            D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1] + 1));
+                        }
                     }
                 }
+
+                int MSD = D[originalPhrase.length() - 1][transcribedPhrase.length() - 1];
+                double errorRate = MSD * 100.0 / Math.max(originalPhrase.length(), transcribedPhrase.length());
+
+                writeToDB(MSD, errorRate);
             }
-
-            int MSD = D[originalPhrase.length() - 1][transcribedPhrase.length() - 1];
-            double errorRate = MSD * 100.0 / Math.max(originalPhrase.length(), transcribedPhrase.length());
-
-            // TODO write into database here
             switchActivity();
         });
+    }
+
+    private void writeToDB(int MSD, double errorRate) {
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        SessionDataEntry sessionDataEntry = new SessionDataEntry(
+                keyboardType, previousIndex + 1, originalPhrase, transcribedPhrase,
+                timeTaken, errorRate, startTypingTimer, endTypingTimer, MSD
+        );
+
+        db_helper.addSessionDataEntry(sessionDataEntry);
     }
 
     private void attachListenerToEditText() {
@@ -156,11 +173,13 @@ public class TrialActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // first letter
-                if (s.length() == 1) {
-                    startTypingTimer = System.currentTimeMillis();
+                if (isActualTrial) {
+                    // first letter
+                    if (s.length() == 1) {
+                        startTypingTimer = System.currentTimeMillis();
+                    }
+                    endTypingTimer = System.currentTimeMillis();
                 }
-                endTypingTimer = System.currentTimeMillis();
             }
 
             @Override
@@ -172,6 +191,12 @@ public class TrialActivity extends AppCompatActivity {
 
     private void initiatePhrase() {
         if (indexes.size() == 0) {
+
+            // delete all old data from database
+            if (isActualTrial) {
+                db_helper.deleteAllTrialDataEntry();
+            }
+
             List<Integer> temporaryIndex = new ArrayList<Integer>();
             for (int i = 0; i < phrases.size(); i++) {
                 temporaryIndex.add(i);
@@ -188,7 +213,7 @@ public class TrialActivity extends AppCompatActivity {
 
     private void switchActivity() {
         if (previousIndex >= TRIALS - 1) {
-            setTitle("End");
+            // TODO switch to final activity
         } else {
             Intent nextIntent = new Intent(TrialActivity.this, TrialActivity.class);
             nextIntent.putExtra("keyboard_type", keyboardType);
