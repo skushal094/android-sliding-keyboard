@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectKeyboard">
-        <activity android:name=".AfterSubmitActivity"></activity>
+        <activity android:name=".ThankYouActivity"></activity>
+        <activity android:name=".AfterSubmitActivity" />
         <activity android:name=".TrialActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -98,10 +98,9 @@ public class AfterSubmitActivity extends AppCompatActivity {
 
                 Toast.makeText(AfterSubmitActivity.this, "Saved", Toast.LENGTH_SHORT).show();
 
-                // TODO uncomment this after creating thank you activity
-//                Intent intent1 = new Intent(AfterSubmitActivity.this, ThankYouActivity.class);
-//                intent1.putExtra("file_location", file.getAbsolutePath());
-//                startActivity(intent1);
+                Intent intent1 = new Intent(AfterSubmitActivity.this, ThankYouActivity.class);
+                intent1.putExtra("file_location", file.getAbsolutePath());
+                startActivity(intent1);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(AfterSubmitActivity.this, "File not found", Toast.LENGTH_SHORT).show();
