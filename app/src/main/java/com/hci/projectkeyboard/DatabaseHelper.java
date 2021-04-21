@@ -16,6 +16,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "db_project_keyboard.db";
     private static final String TABLE_SESSIONS = "tb_sessions";
 
+    private static final String KEY_KEYBOARD = "keyboard";
+
     private static final String KEY_PHRASE_NO = "phrase_no";
 
     private static final String KEY_ORIGINAL_PHRASE = "original_phrase";
@@ -36,6 +38,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_SESSIONS_TABLE = "CREATE TABLE " + TABLE_SESSIONS + "("
+                + KEY_KEYBOARD + " TEXT,"
+
                 + KEY_PHRASE_NO + " INTEGER,"
 
                 + KEY_ORIGINAL_PHRASE + " TEXT,"
@@ -64,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_KEYBOARD, sessionDataEntry.keyboard);
         values.put(KEY_PHRASE_NO, sessionDataEntry.phrase_no);
         values.put(KEY_ORIGINAL_PHRASE, sessionDataEntry.original_phrase);
         values.put(KEY_TRANSCRIBED_PHRASE, sessionDataEntry.transcribed_phrase);
@@ -92,15 +97,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 SessionDataEntry sessionDataEntry = new SessionDataEntry(
-                        Integer.parseInt(cursor.getString(0)),
-                        cursor.getString(1),
+                        cursor.getString(0),
+                        Integer.parseInt(cursor.getString(1)),
                         cursor.getString(2),
-                        Integer.parseInt(cursor.getString(3)),
-                        Double.parseDouble(cursor.getString(4)),
-                        Integer.parseInt(cursor.getString(5)),
-                        Integer.parseInt(cursor.getString(6)),
-                        Integer.parseInt(cursor.getString(7)),
-                        Integer.parseInt(cursor.getString(8))
+                        cursor.getString(3),
+                        Long.parseLong(cursor.getString(4)),
+                        Double.parseDouble(cursor.getString(5)),
+                        Long.parseLong(cursor.getString(6)),
+                        Long.parseLong(cursor.getString(7)),
+                        Integer.parseInt(cursor.getString(8)),
+                        Integer.parseInt(cursor.getString(9))
                 );
                 // Adding contact to list
                 sessionList.add(sessionDataEntry);
