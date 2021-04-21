@@ -1,21 +1,17 @@
 package com.hci.projectkeyboard;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,7 +27,7 @@ public class TrialActivity extends AppCompatActivity {
     private Intent trialIntent;
     private boolean isActualTrial = false;
 
-    private int TRIALS = 15;
+    private final int TRIALS = 15;
 
     private List<String> phrases;
 
