@@ -98,28 +98,31 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        InputConnection ic = getCurrentInputConnection();
+
+        new Thread(() -> {
+            InputConnection ic = getCurrentInputConnection();
 //        playClick(primaryCode);
-        switch (primaryCode) {
-            case -8:
-                break;
-            case Keyboard.KEYCODE_DELETE:
-                ic.deleteSurroundingText(1, 0);
-                break;
-            case Keyboard.KEYCODE_SHIFT:
-                isCaps = !isCaps;
-                keyboard.setShifted(isCaps);
-                kv.invalidateAllKeys();
-                break;
-            case Keyboard.KEYCODE_DONE:
-                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-                break;
-            default:
-                char code = (char) primaryCode;
-                if (Character.isLetter(code) && isCaps)
-                    code = Character.toUpperCase(code);
-                ic.commitText(String.valueOf(code), 1);
-        }
+            switch (primaryCode) {
+                case -8:
+                    break;
+                case Keyboard.KEYCODE_DELETE:
+                    ic.deleteSurroundingText(1, 0);
+                    break;
+//                case Keyboard.KEYCODE_SHIFT:
+//                    isCaps = !isCaps;
+//                    keyboard.setShifted(isCaps);
+//                    kv.invalidateAllKeys();
+//                    break;
+                case Keyboard.KEYCODE_DONE:
+                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    break;
+                default:
+                    char code = (char) primaryCode;
+                    if (Character.isLetter(code) && isCaps)
+                        code = Character.toUpperCase(code);
+                    ic.commitText(String.valueOf(code), 1);
+            }
+        }).start();
     }
 
     private void playClick(int i) {
@@ -169,7 +172,7 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         long curTime = System.currentTimeMillis();
-        if ((curTime - lastUpdate) < 500) {
+        if ((curTime - lastUpdate) < 700) {
             return;
         }
 
