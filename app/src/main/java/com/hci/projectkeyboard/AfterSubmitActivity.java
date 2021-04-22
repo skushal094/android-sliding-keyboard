@@ -56,8 +56,6 @@ public class AfterSubmitActivity extends AppCompatActivity {
 
     public void export(View view) {
 
-        Toast.makeText(this, "Here", Toast.LENGTH_SHORT).show();
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -111,8 +109,7 @@ public class AfterSubmitActivity extends AppCompatActivity {
                 Toast.makeText(AfterSubmitActivity.this, "Error saving", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // TODO change target activity here
-            Intent intent = new Intent(AfterSubmitActivity.this, MainActivity.class);
+            Intent intent = new Intent(AfterSubmitActivity.this, SelectionScreen.class);
             startActivity(intent);
             finish();
         }

@@ -32,8 +32,7 @@ public class ThankYouActivity extends AppCompatActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO change target activity here
-                Intent intent = new Intent(ThankYouActivity.this, MainActivity.class);
+                Intent intent = new Intent(ThankYouActivity.this, SelectionScreen.class);
                 startActivity(intent);
                 finish();
             }
