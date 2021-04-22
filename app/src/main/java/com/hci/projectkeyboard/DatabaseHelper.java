@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_TRANSCRIBED_PHRASE = "transcribed_phrase";
     private static final String KEY_TIME_TAKEN = "time_taken";
     private static final String KEY_ERROR_RATE = "error_rate";
+    private static final String KEY_WPM = "wpm";
 
     private static final String KEY_START_TIME = "start_time";
     private static final String KEY_END_TIME = "end_time";
@@ -46,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + KEY_TRANSCRIBED_PHRASE + " TEXT,"
                 + KEY_TIME_TAKEN + " INTEGER,"
                 + KEY_ERROR_RATE + " REAL,"
+                + KEY_WPM + " INTEGER,"
 
                 + KEY_START_TIME + " INTEGER, "
                 + KEY_END_TIME + " INTEGER, "
@@ -74,6 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_TRANSCRIBED_PHRASE, sessionDataEntry.transcribed_phrase);
         values.put(KEY_TIME_TAKEN, sessionDataEntry.time_taken);
         values.put(KEY_ERROR_RATE, sessionDataEntry.error_rate);
+        values.put(KEY_WPM, sessionDataEntry.wpm);
         values.put(KEY_START_TIME, sessionDataEntry.start_time);
         values.put(KEY_END_TIME, sessionDataEntry.end_time);
         values.put(KEY_MSD, sessionDataEntry.msd);
@@ -103,10 +106,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(3),
                         Long.parseLong(cursor.getString(4)),
                         Double.parseDouble(cursor.getString(5)),
-                        Long.parseLong(cursor.getString(6)),
+                        Integer.parseInt(cursor.getString(6)),
                         Long.parseLong(cursor.getString(7)),
-                        Integer.parseInt(cursor.getString(8)),
-                        Integer.parseInt(cursor.getString(9))
+                        Long.parseLong(cursor.getString(8)),
+                        Integer.parseInt(cursor.getString(9)),
+                        Integer.parseInt(cursor.getString(10))
                 );
                 // Adding contact to list
                 sessionList.add(sessionDataEntry);

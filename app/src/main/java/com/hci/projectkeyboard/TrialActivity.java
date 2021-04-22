@@ -158,9 +158,11 @@ public class TrialActivity extends AppCompatActivity {
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
 
+        int wpm = (int) ((transcribedPhrase.length() - 1) * 60 / (5 * timeTaken / 1000));
+
         SessionDataEntry sessionDataEntry = new SessionDataEntry(
                 keyboardType, previousIndex + 1, originalPhrase, transcribedPhrase,
-                timeTaken, errorRate, startTypingTimer, endTypingTimer, MSD
+                timeTaken, errorRate, wpm, startTypingTimer, endTypingTimer, MSD
         );
 
         db_helper.addSessionDataEntry(sessionDataEntry);
