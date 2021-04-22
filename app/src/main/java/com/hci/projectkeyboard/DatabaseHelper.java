@@ -44,12 +44,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 + KEY_ORIGINAL_PHRASE + " TEXT,"
                 + KEY_TRANSCRIBED_PHRASE + " TEXT,"
-                + KEY_TIME_TAKEN + "INTEGER,"
-                + KEY_ERROR_RATE + "REAL,"
+                + KEY_TIME_TAKEN + " INTEGER,"
+                + KEY_ERROR_RATE + " REAL,"
 
-                + KEY_START_TIME + "INTEGER,"
-                + KEY_END_TIME + "INTEGER,"
-                + KEY_MSD + "INTEGER,"
+                + KEY_START_TIME + " INTEGER, "
+                + KEY_END_TIME + " INTEGER, "
+                + KEY_MSD + " INTEGER,"
 
                 + KEY_ID + " INTEGER PRIMARY KEY"
                 + ")";

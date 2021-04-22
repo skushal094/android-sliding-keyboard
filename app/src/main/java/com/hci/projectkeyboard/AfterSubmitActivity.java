@@ -56,6 +56,8 @@ public class AfterSubmitActivity extends AppCompatActivity {
 
     public void export(View view) {
 
+        Toast.makeText(this, "Here", Toast.LENGTH_SHORT).show();
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 

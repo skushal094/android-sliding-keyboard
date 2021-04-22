@@ -60,6 +60,13 @@ public class TrialActivity extends AppCompatActivity {
         if (keyboardType != null && (keyboardType.equals("GBoard") || keyboardType.equals("Sliding Keyboard"))) {
             isActualTrial = true;
         }
+
+        if (isActualTrial) {
+            db_helper = new DatabaseHelper(this);
+        } else {
+
+        }
+
         indexes = trialIntent.getIntegerArrayListExtra("indexes");
         if (indexes == null) {
             indexes = new ArrayList<Integer>();
@@ -76,12 +83,6 @@ public class TrialActivity extends AppCompatActivity {
 
         phraseEditText = findViewById(R.id.editTextTextPersonName);
         attachListenerToEditText();
-
-        if (isActualTrial) {
-            db_helper = new DatabaseHelper(this);
-        } else {
-
-        }
     }
 
     private void preparePhrases() {
@@ -111,6 +112,9 @@ public class TrialActivity extends AppCompatActivity {
                 originalPhrase = (String) parentSentence.getText();
                 transcribedPhrase = phraseEditText.getText().toString();
 
+                int MSD = 0;
+                double errorRate = 0.0;
+
 //            // replace multiple spaces with one
 //            originalPhrase = originalPhrase.replaceAll("\\s+", " ");
 //            transcribedPhrase = transcribedPhrase.replaceAll("\\s+", " ");
@@ -119,28 +123,30 @@ public class TrialActivity extends AppCompatActivity {
 //            originalPhrase = originalPhrase.trim();
 //            transcribedPhrase = transcribedPhrase.trim();
 
-                int[][] D = new int[originalPhrase.length()][transcribedPhrase.length()];
+                if (originalPhrase.length() > 0 && transcribedPhrase.length() > 0) {
+                    int[][] D = new int[originalPhrase.length()][transcribedPhrase.length()];
 
-                for (int i = 0; i < originalPhrase.length(); i++) {
-                    D[i][0] = i;
-                }
+                    for (int i = 0; i < originalPhrase.length(); i++) {
+                        D[i][0] = i;
+                    }
 
-                for (int i = 0; i < transcribedPhrase.length(); i++) {
-                    D[0][i] = i;
-                }
+                    for (int i = 0; i < transcribedPhrase.length(); i++) {
+                        D[0][i] = i;
+                    }
 
-                for (int i = 1; i < originalPhrase.length(); i++) {
-                    for (int j = 1; j < transcribedPhrase.length(); j++) {
-                        if (originalPhrase.charAt(i) == transcribedPhrase.charAt(j)) {
-                            D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1]));
-                        } else {
-                            D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1] + 1));
+                    for (int i = 1; i < originalPhrase.length(); i++) {
+                        for (int j = 1; j < transcribedPhrase.length(); j++) {
+                            if (originalPhrase.charAt(i) == transcribedPhrase.charAt(j)) {
+                                D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1]));
+                            } else {
+                                D[i][j] = Math.min(Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1), (D[i - 1][j - 1] + 1));
+                            }
                         }
                     }
-                }
 
-                int MSD = D[originalPhrase.length() - 1][transcribedPhrase.length() - 1];
-                double errorRate = MSD * 100.0 / Math.max(originalPhrase.length(), transcribedPhrase.length());
+                    MSD = D[originalPhrase.length() - 1][transcribedPhrase.length() - 1];
+                    errorRate = MSD * 100.0 / Math.max(originalPhrase.length(), transcribedPhrase.length());
+                }
 
                 writeToDB(MSD, errorRate);
             }
