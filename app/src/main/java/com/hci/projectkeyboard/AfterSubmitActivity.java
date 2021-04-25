@@ -69,7 +69,7 @@ public class AfterSubmitActivity extends AppCompatActivity {
 
             StringBuilder data = new StringBuilder();
             data.append("keyboard,phrase_no,original_phrase,transcribed_phrase,time_taken,error_rate," +
-                    "start_time,end_time,MSD,id");
+                    "wpm,start_time,end_time,MSD,id");
             for (SessionDataEntry sessionDataEntry : dataEntryList) {
                 data.append("\n")
                         .append(sessionDataEntry.keyboard).append(",")
@@ -78,6 +78,7 @@ public class AfterSubmitActivity extends AppCompatActivity {
                         .append(sessionDataEntry.transcribed_phrase).append(",")
                         .append(sessionDataEntry.time_taken).append(",")
                         .append(sessionDataEntry.error_rate).append(",")
+                        .append(sessionDataEntry.wpm).append(",")
                         .append(sessionDataEntry.start_time).append(",")
                         .append(sessionDataEntry.end_time).append(",")
                         .append(sessionDataEntry.msd).append(",")
