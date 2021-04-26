@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Project Keyboard</string>
     <string name="list_item">list item</string>
+    <string name="instructions">Instructions</string>
 </resources>
