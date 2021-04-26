@@ -71,7 +71,7 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, 20000000);
 
         return kv;
     }
@@ -172,7 +172,7 @@ public class KeyboardService extends InputMethodService implements KeyboardView.
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         long curTime = System.currentTimeMillis();
-        if ((curTime - lastUpdate) < 700) {
+        if ((curTime - lastUpdate) < 1000) {
             return;
         }
 
